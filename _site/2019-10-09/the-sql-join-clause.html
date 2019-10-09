@@ -12,13 +12,13 @@
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="Things about programming and others." />
 <meta property="og:description" content="Things about programming and others." />
-<link rel="canonical" href="http://localhost:4000/2019-10-09/the-sql-join-clause" />
-<meta property="og:url" content="http://localhost:4000/2019-10-09/the-sql-join-clause" />
+<link rel="canonical" href="https://vnhnhm.github.io/2019-10-09/the-sql-join-clause" />
+<meta property="og:url" content="https://vnhnhm.github.io/2019-10-09/the-sql-join-clause" />
 <meta property="og:site_name" content="Sebastián Palma" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2019-10-09T00:00:00+03:00" />
 <script type="application/ld+json">
-{"description":"Things about programming and others.","@type":"BlogPosting","url":"http://localhost:4000/2019-10-09/the-sql-join-clause","headline":"The SQL join clause","dateModified":"2019-10-09T00:00:00+03:00","datePublished":"2019-10-09T00:00:00+03:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2019-10-09/the-sql-join-clause"},"author":{"@type":"Person","name":"Sebastián Palma"},"@context":"https://schema.org"}</script>
+{"description":"Things about programming and others.","@type":"BlogPosting","url":"https://vnhnhm.github.io/2019-10-09/the-sql-join-clause","headline":"The SQL join clause","dateModified":"2019-10-09T00:00:00+03:00","datePublished":"2019-10-09T00:00:00+03:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://vnhnhm.github.io/2019-10-09/the-sql-join-clause"},"author":{"@type":"Person","name":"Sebastián Palma"},"@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -32,7 +32,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
 
   <!-- RSS -->
-  <link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Sebastián Palma" />
+  <link type="application/atom+xml" rel="alternate" href="https://vnhnhm.github.io/feed.xml" title="Sebastián Palma" />
 
   <!-- Google Analytics-->
   
@@ -85,8 +85,12 @@
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
 
 <script>
-  document.querySelectorAll("script[type='math/tex; mode=display']").forEach(function(el) {
-    el.outerHTML = katex.renderToString(el.textContent.replace(/%.*/g, ''), { displayMode: true });
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('rendered');
+
+    document.querySelectorAll("script[type='math/tex; mode=display']").forEach(function(el) {
+      el.outerHTML = katex.renderToString(el.textContent.replace(/%.*/g, ''), { displayMode: true });
+    });
   });
 </script>
 
@@ -776,7 +780,7 @@ WHERE users.user_id = posts.user_id;
     </main>
     <footer>
   <span>
-    &copy; <time datetime="2019-10-09 14:22:54 +0300">2019</time> Chester How. Made with Jekyll using the <a href="https://github.com/chesterhow/tale/">Tale</a> theme.
+    &copy; <time datetime="2019-10-09 14:29:09 +0300">2019</time> Chester How. Made with Jekyll using the <a href="https://github.com/chesterhow/tale/">Tale</a> theme.
   </span>
 </footer>
 
