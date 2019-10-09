@@ -84,6 +84,12 @@
 
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
 
+<script>
+  document.querySelectorAll("script[type='math/tex; mode=display']").forEach(function(el) {
+    el.outerHTML = katex.renderToString(el.textContent.replace(/%.*/g, ''), { displayMode: true });
+  });
+</script>
+
 <p><br />
 <br /></p>
 
@@ -770,7 +776,7 @@ WHERE users.user_id = posts.user_id;
     </main>
     <footer>
   <span>
-    &copy; <time datetime="2019-10-09 14:09:14 +0300">2019</time> Chester How. Made with Jekyll using the <a href="https://github.com/chesterhow/tale/">Tale</a> theme.
+    &copy; <time datetime="2019-10-09 14:22:54 +0300">2019</time> Chester How. Made with Jekyll using the <a href="https://github.com/chesterhow/tale/">Tale</a> theme.
   </span>
 </footer>
 
