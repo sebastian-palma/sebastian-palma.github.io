@@ -1,0 +1,35 @@
+h5[id] {
+  font-size: 25px;
+}
+
+h5[id]:not(#references) {
+  margin-top: 100px;
+}
+
+div.highlighter-rouge {
+  margin: 45px 0 45px 0;
+}
+
+.katex-display {
+  margin: 50px 0 50px 0px !important;
+}
+
+table {
+  margin: 25px 0 25px 0;
+}
+
+blockquote {
+  margin: 40px 0 40px 0;
+}
+
+div.references {
+  margin: 120px 0 50px 0;
+}
+
+html, h1, h2, h3, h4, h5, h6, a, .post-title {
+  font-family: "Times New Roman", Times, serif !important;
+}
+
+.post p {
+  font-size: 17px;
+}

@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>The SQL join clause | Sebastián Palma</title>
+<meta name="generator" content="Jekyll v4.0.0" />
+<meta property="og:title" content="The SQL join clause" />
+<meta name="author" content="Sebastián Palma" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Things about programming and others." />
+<meta property="og:description" content="Things about programming and others." />
+<link rel="canonical" href="http://localhost:4000/2019-10-09/the-sql-join-clause" />
+<meta property="og:url" content="http://localhost:4000/2019-10-09/the-sql-join-clause" />
+<meta property="og:site_name" content="Sebastián Palma" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-10-09T00:00:00+03:00" />
+<script type="application/ld+json">
+{"description":"Things about programming and others.","@type":"BlogPosting","url":"http://localhost:4000/2019-10-09/the-sql-join-clause","headline":"The SQL join clause","dateModified":"2019-10-09T00:00:00+03:00","datePublished":"2019-10-09T00:00:00+03:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2019-10-09/the-sql-join-clause"},"author":{"@type":"Person","name":"Sebastián Palma"},"@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Baskerville:400,400i,700">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+
+  <!-- RSS -->
+  <link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Sebastián Palma" />
+
+  <!-- Google Analytics-->
+  
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-9M01P7BJXQ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-9M01P7BJXQ');
+  </script>
+</head>
+
+  <body>
+    <nav class="nav">
+  <div class="nav-container">
+    <a href="/">
+      <h2 class="nav-title">Sebastián Palma</h2>
+    </a>
+    <ul>
+      <li><a href="/about">About</a></li>
+      <li><a href="/">Posts</a></li>
+    </ul>
+  </div>
+</nav>
+
+    <main>
+      <div class="post">
+  <div class="post-info">
+    <span>Written by</span>
+    
+        Sebastián Palma
+    
+
+    
+      <br>
+      <span>on&nbsp;</span><time datetime="2019-10-09 00:00:00 +0300">October 09, 2019</time>
+    
+  </div>
+
+  <h1 class="post-title">The SQL join clause</h1>
+  <div class="post-line"></div>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous" />
+
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js" integrity="sha384-9Nhn55MVVN0/4OFx7EE5kpFBPsEMZxKTCnA+4fqDmg12eCTqGi6+BB2LjY8brQxJ" crossorigin="anonymous"></script>
+
+<script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script>
+
+<p><br />
+<br /></p>
+
+<p>The term <em>join</em> concerning to databases appeared with the publishing of the paper “A Relational Model of Data for Large Shared Data Banks” by Edgar F. Codd (IBM Research Laboratory) in June of 1970. After years working and dealing with data banks using the Hierarchical and Network data models, and seeing the inflexibility that programs developed at that time presented for their maintainers.</p>
+
+<p>In the paper, Codd enumerates several problems with the data and access path dependencies in the systems and introduces his idea of a relational view of data accompanied by the early definitions of the normal form to avoid redundancy and get consistency.</p>
+
+<p>The term relation is the main point from his work and is what we use today when working with relational databases applying the relational model. The elimination of non-simple domains (structures holding a single set of data, e.g a column) by taking its primary key and expanding each of the subordinate relations by inserting the primary key is what he called normalization.</p>
+
+<p>Considering the following example he presents the differences between an un-normalized set and a normalized set:</p>
+
+<p>“<em>jobhistory</em> and <em>children</em> are non simple domains of the relation <em>employee</em>. <em>salaryhistory</em> is a non simple domain of the relation <em>jobhistory</em>.”</p>
+
+<p><br /></p>
+
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>employee</mtext><mspace linebreak="newline"></mspace><mtext>|</mtext><mspace linebreak="newline"></mspace><mtext>———————————————————–</mtext><mspace linebreak="newline"></mspace><mtext>|                                                                            |</mtext><mspace linebreak="newline"></mspace><mtext>jobhistory                                                              children</mtext><mspace linebreak="newline"></mspace><mtext>|                                                                             </mtext><mspace linebreak="newline"></mspace><mtext>salaryhistory                                                                            </mtext></mrow><annotation encoding="application/x-tex">\text{employee}\\
+\text{|}\\
+\text{-----------------------------------------------------------}\\
+\text{|}~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\text{|}\\
+\text{jobhistory}~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\text{children}\\
+\text{|}~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\\
+\text{salaryhistory}~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord text"><span class="mord">employee</span></span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">|</span></span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord text"><span class="mord">———————————————————–</span></span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">|</span></span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mord text"><span class="mord">|</span></span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord text"><span class="mord">jobhistory</span></span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mord text"><span class="mord">children</span></span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">|</span></span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord text"><span class="mord">salaryhistory</span></span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span><span class="mspace nobreak"> </span></span></span></span></span>
+
+<p><br /></p>
+
+<p>Un-normalized set:</p>
+
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>e</mi><mi>m</mi><mi>p</mi><mi>l</mi><mi>o</mi><mi>y</mi><mi>e</mi><mi>e</mi><mtext> </mtext><mo stretchy="false">(</mo><mtext mathvariant="bold">man</mtext><mi mathvariant="normal">#</mi><mo separator="true">,</mo><mtext> </mtext><mi>n</mi><mi>a</mi><mi>m</mi><mi>e</mi><mo separator="true">,</mo><mtext> </mtext><mi>b</mi><mi>i</mi><mi>r</mi><mi>t</mi><mi>h</mi><mi>d</mi><mi>a</mi><mi>t</mi><mi>e</mi><mo separator="true">,</mo><mtext> </mtext><mi>j</mi><mi>o</mi><mi>b</mi><mi>h</mi><mi>i</mi><mi>s</mi><mi>t</mi><mi>o</mi><mi>r</mi><mi>y</mi><mo separator="true">,</mo><mtext> </mtext><mi>c</mi><mi>h</mi><mi>i</mi><mi>l</mi><mi>d</mi><mi>r</mi><mi>e</mi><mi>n</mi><mspace linebreak="newline"></mspace><mi>j</mi><mi>o</mi><mi>b</mi><mi>h</mi><mi>i</mi><mi>s</mi><mi>t</mi><mi>o</mi><mi>r</mi><mi>y</mi><mtext> </mtext><mo stretchy="false">(</mo><mi>j</mi><mi>o</mi><mi>b</mi><mi>d</mi><mi>a</mi><mi>t</mi><mi>e</mi><mo separator="true">,</mo><mtext> </mtext><mi>t</mi><mi>i</mi><mi>t</mi><mi>l</mi><mi>e</mi><mo separator="true">,</mo><mtext> </mtext><mi>s</mi><mi>a</mi><mi>l</mi><mi>a</mi><mi>r</mi><mi>y</mi><mi>h</mi><mi>i</mi><mi>s</mi><mi>t</mi><mi>o</mi><mi>r</mi><mi>y</mi><mspace linebreak="newline"></mspace><mi>s</mi><mi>a</mi><mi>l</mi><mi>a</mi><mi>r</mi><mi>y</mi><mi>h</mi><mi>i</mi><mi>s</mi><mi>t</mi><mi>o</mi><mi>r</mi><mi>y</mi><mtext> </mtext><mo stretchy="false">(</mo><mi>s</mi><mi>a</mi><mi>l</mi><mi>a</mi><mi>r</mi><mi>y</mi><mi>d</mi><mi>a</mi><mi>t</mi><mi>e</mi><mo separator="true">,</mo><mtext> </mtext><mi>s</mi><mi>a</mi><mi>l</mi><mi>a</mi><mi>r</mi><mi>y</mi><mspace linebreak="newline"></mspace><mi>c</mi><mi>h</mi><mi>i</mi><mi>l</mi><mi>d</mi><mi>r</mi><mi>e</mi><mi>n</mi><mtext> </mtext><mo stretchy="false">(</mo><mi>c</mi><mi>h</mi><mi>i</mi><mi>l</mi><mi>d</mi><mi>n</mi><mi>a</mi><mi>m</mi><mi>e</mi><mo separator="true">,</mo><mtext> </mtext><mi>b</mi><mi>i</mi><mi>r</mi><mi>t</mi><mi>h</mi><mi>y</mi><mi>e</mi><mi>a</mi><mi>r</mi></mrow><annotation encoding="application/x-tex">employee~(\textbf{man}\#,~name,~birthdate,~jobhistory,~children\\
+jobhistory~(jobdate,~title,~salaryhistory\\
+salaryhistory~(salarydate,~salary\\
+children~(childname,~birthyear</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">e</span><span class="mord mathdefault">m</span><span class="mord mathdefault">p</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">o</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mord mathdefault">e</span><span class="mord mathdefault">e</span><span class="mspace nobreak"> </span><span class="mopen">(</span><span class="mord text"><span class="mord textbf">man</span></span><span class="mord">#</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace nobreak"> </span><span class="mord mathdefault">n</span><span class="mord mathdefault">a</span><span class="mord mathdefault">m</span><span class="mord mathdefault">e</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace nobreak"> </span><span class="mord mathdefault">b</span><span class="mord mathdefault">i</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">t</span><span class="mord mathdefault">h</span><span class="mord mathdefault">d</span><span class="mord mathdefault">a</span><span class="mord mathdefault">t</span><span class="mord mathdefault">e</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace nobreak"> </span><span class="mord mathdefault" style="margin-right:0.05724em;">j</span><span class="mord mathdefault">o</span><span class="mord mathdefault">b</span><span class="mord mathdefault">h</span><span class="mord mathdefault">i</span><span class="mord mathdefault">s</span><span class="mord mathdefault">t</span><span class="mord mathdefault">o</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace nobreak"> </span><span class="mord mathdefault">c</span><span class="mord mathdefault">h</span><span class="mord mathdefault">i</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">d</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">e</span><span class="mord mathdefault">n</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.05724em;">j</span><span class="mord mathdefault">o</span><span class="mord mathdefault">b</span><span class="mord mathdefault">h</span><span class="mord mathdefault">i</span><span class="mord mathdefault">s</span><span class="mord mathdefault">t</span><span class="mord mathdefault">o</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mspace nobreak"> </span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.05724em;">j</span><span class="mord mathdefault">o</span><span class="mord mathdefault">b</span><span class="mord mathdefault">d</span><span class="mord mathdefault">a</span><span class="mord mathdefault">t</span><span class="mord mathdefault">e</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace nobreak"> </span><span class="mord mathdefault">t</span><span class="mord mathdefault">i</span><span class="mord mathdefault">t</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">e</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace nobreak"> </span><span class="mord mathdefault">s</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mord mathdefault">h</span><span class="mord mathdefault">i</span><span class="mord mathdefault">s</span><span class="mord mathdefault">t</span><span class="mord mathdefault">o</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">s</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mord mathdefault">h</span><span class="mord mathdefault">i</span><span class="mord mathdefault">s</span><span class="mord mathdefault">t</span><span class="mord mathdefault">o</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mspace nobreak"> </span><span class="mopen">(</span><span class="mord mathdefault">s</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mord mathdefault">d</span><span class="mord mathdefault">a</span><span class="mord mathdefault">t</span><span class="mord mathdefault">e</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace nobreak"> </span><span class="mord mathdefault">s</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault">c</span><span class="mord mathdefault">h</span><span class="mord mathdefault">i</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">d</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">e</span><span class="mord mathdefault">n</span><span class="mspace nobreak"> </span><span class="mopen">(</span><span class="mord mathdefault">c</span><span class="mord mathdefault">h</span><span class="mord mathdefault">i</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">d</span><span class="mord mathdefault">n</span><span class="mord mathdefault">a</span><span class="mord mathdefault">m</span><span class="mord mathdefault">e</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace nobreak"> </span><span class="mord mathdefault">b</span><span class="mord mathdefault">i</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">t</span><span class="mord mathdefault">h</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mord mathdefault">e</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span></span></span></span></span>
+
+<p>Normalized set:</p>
+
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>e</mi><mi>m</mi><mi>p</mi><mi>l</mi><mi>o</mi><mi>y</mi><mi>e</mi><msup><mi>e</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup><mtext> </mtext><mo stretchy="false">(</mo><mtext mathvariant="bold">man</mtext><mi mathvariant="normal">#</mi><mo separator="true">,</mo><mtext> </mtext><mi>n</mi><mi>a</mi><mi>m</mi><mi>e</mi><mo separator="true">,</mo><mtext> </mtext><mi>b</mi><mi>i</mi><mi>r</mi><mi>t</mi><mi>h</mi><mi>d</mi><mi>a</mi><mi>t</mi><mi>e</mi><mspace linebreak="newline"></mspace><mi>j</mi><mi>o</mi><mi>b</mi><mi>h</mi><mi>i</mi><mi>s</mi><mi>t</mi><mi>o</mi><mi>r</mi><msup><mi>y</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup><mtext> </mtext><mo stretchy="false">(</mo><mtext mathvariant="bold">man</mtext><mi mathvariant="normal">#</mi><mo separator="true">,</mo><mtext> </mtext><mi>j</mi><mi>o</mi><mi>b</mi><mi>d</mi><mi>a</mi><mi>t</mi><mi>e</mi><mo separator="true">,</mo><mtext> </mtext><mi>t</mi><mi>i</mi><mi>t</mi><mi>l</mi><mi>e</mi><mspace linebreak="newline"></mspace><mi>s</mi><mi>a</mi><mi>l</mi><mi>a</mi><mi>r</mi><mi>y</mi><mi>h</mi><mi>i</mi><mi>s</mi><mi>t</mi><mi>o</mi><mi>r</mi><msup><mi>y</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup><mtext> </mtext><mo stretchy="false">(</mo><mtext mathvariant="bold">man</mtext><mi mathvariant="normal">#</mi><mo separator="true">,</mo><mtext> </mtext><mi>j</mi><mi>o</mi><mi>b</mi><mi>d</mi><mi>a</mi><mi>t</mi><mi>e</mi><mo separator="true">,</mo><mtext> </mtext><mi>s</mi><mi>a</mi><mi>l</mi><mi>a</mi><mi>r</mi><mi>y</mi><mi>d</mi><mi>a</mi><mi>t</mi><mi>e</mi><mo separator="true">,</mo><mtext> </mtext><mi>s</mi><mi>a</mi><mi>l</mi><mi>a</mi><mi>r</mi><mi>y</mi><mspace linebreak="newline"></mspace><mi>c</mi><mi>h</mi><mi>i</mi><mi>l</mi><mi>d</mi><mi>r</mi><mi>e</mi><msup><mi>n</mi><mo mathvariant="normal" lspace="0em" rspace="0em">′</mo></msup><mtext> </mtext><mo stretchy="false">(</mo><mtext mathvariant="bold">man</mtext><mi mathvariant="normal">#</mi><mo separator="true">,</mo><mtext> </mtext><mi>c</mi><mi>h</mi><mi>i</mi><mi>l</mi><mi>d</mi><mi>n</mi><mi>a</mi><mi>m</mi><mi>e</mi><mo separator="true">,</mo><mtext> </mtext><mi>b</mi><mi>i</mi><mi>r</mi><mi>t</mi><mi>h</mi><mi>y</mi><mi>e</mi><mi>a</mi><mi>r</mi></mrow><annotation encoding="application/x-tex">employee^{\prime}~(\textbf{man}\#,~name,~birthdate\\
+jobhistory^{\prime}~(\textbf{man}\#,~jobdate,~title\\
+salaryhistory^{\prime}~(\textbf{man}\#,~jobdate,~salarydate,~salary\\
+children^{\prime}~(\textbf{man}\#,~childname,~birthyear</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.051892em;vertical-align:-0.25em;"></span><span class="mord mathdefault">e</span><span class="mord mathdefault">m</span><span class="mord mathdefault">p</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">o</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mord mathdefault">e</span><span class="mord"><span class="mord mathdefault">e</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.801892em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mspace nobreak"> </span><span class="mopen">(</span><span class="mord text"><span class="mord textbf">man</span></span><span class="mord">#</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace nobreak"> </span><span class="mord mathdefault">n</span><span class="mord mathdefault">a</span><span class="mord mathdefault">m</span><span class="mord mathdefault">e</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace nobreak"> </span><span class="mord mathdefault">b</span><span class="mord mathdefault">i</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">t</span><span class="mord mathdefault">h</span><span class="mord mathdefault">d</span><span class="mord mathdefault">a</span><span class="mord mathdefault">t</span><span class="mord mathdefault">e</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:1.051892em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.05724em;">j</span><span class="mord mathdefault">o</span><span class="mord mathdefault">b</span><span class="mord mathdefault">h</span><span class="mord mathdefault">i</span><span class="mord mathdefault">s</span><span class="mord mathdefault">t</span><span class="mord mathdefault">o</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.801892em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mspace nobreak"> </span><span class="mopen">(</span><span class="mord text"><span class="mord textbf">man</span></span><span class="mord">#</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace nobreak"> </span><span class="mord mathdefault" style="margin-right:0.05724em;">j</span><span class="mord mathdefault">o</span><span class="mord mathdefault">b</span><span class="mord mathdefault">d</span><span class="mord mathdefault">a</span><span class="mord mathdefault">t</span><span class="mord mathdefault">e</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace nobreak"> </span><span class="mord mathdefault">t</span><span class="mord mathdefault">i</span><span class="mord mathdefault">t</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">e</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:1.051892em;vertical-align:-0.25em;"></span><span class="mord mathdefault">s</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mord mathdefault">h</span><span class="mord mathdefault">i</span><span class="mord mathdefault">s</span><span class="mord mathdefault">t</span><span class="mord mathdefault">o</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.801892em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mspace nobreak"> </span><span class="mopen">(</span><span class="mord text"><span class="mord textbf">man</span></span><span class="mord">#</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace nobreak"> </span><span class="mord mathdefault" style="margin-right:0.05724em;">j</span><span class="mord mathdefault">o</span><span class="mord mathdefault">b</span><span class="mord mathdefault">d</span><span class="mord mathdefault">a</span><span class="mord mathdefault">t</span><span class="mord mathdefault">e</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace nobreak"> </span><span class="mord mathdefault">s</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mord mathdefault">d</span><span class="mord mathdefault">a</span><span class="mord mathdefault">t</span><span class="mord mathdefault">e</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace nobreak"> </span><span class="mord mathdefault">s</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:1.051892em;vertical-align:-0.25em;"></span><span class="mord mathdefault">c</span><span class="mord mathdefault">h</span><span class="mord mathdefault">i</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">d</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">e</span><span class="mord"><span class="mord mathdefault">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.801892em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span></span><span class="mspace nobreak"> </span><span class="mopen">(</span><span class="mord text"><span class="mord textbf">man</span></span><span class="mord">#</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace nobreak"> </span><span class="mord mathdefault">c</span><span class="mord mathdefault">h</span><span class="mord mathdefault">i</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">d</span><span class="mord mathdefault">n</span><span class="mord mathdefault">a</span><span class="mord mathdefault">m</span><span class="mord mathdefault">e</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace nobreak"> </span><span class="mord mathdefault">b</span><span class="mord mathdefault">i</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">t</span><span class="mord mathdefault">h</span><span class="mord mathdefault" style="margin-right:0.03588em;">y</span><span class="mord mathdefault">e</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span></span></span></span></span>
+
+<p><br /></p>
+
+<p>The normalization starts by taking the primary key of the topmost relation and insert it into the immediately subordinate relations. Now, the primary key of each expanded relation is the primary key before expansion augmented by the primary key copied down from the parent relation. After that, all nonsimple domains from the parent relation and the top node of the tree are removed. The subsequence of operations is then applied to each remaining sub-tree.</p>
+
+<p>This eliminates duplicate data and adds simplicity not only for storage purposes, but also for the communication of bulk data between systems that use widely different representations of the data.</p>
+
+<p>The term <em>relation</em> is presented as the core of the paper (with the term relation in its mathematical sense):</p>
+
+<blockquote>
+  <p>Given sets \( S_1,S_2,…, S_n \) (which not necessarily must be distinct), <em>S</em> is a relation on these <em>n</em> sets if it’s a set of <em>n-tuples</em> each of which has its first element from \( S_1 \), its second element from \( S_2 \), and so on.
+<br />
+<br />
+<em>R</em> is a subset of the Cartesian product \( S_1 \times S_2 \times … \times S_n \).
+<br />
+<br />
+Referring to \( S_1 \) as the jth domain of R. R is said to have degree n. Relations of degree 1 are often called unary, degree 2 binary, degree 3 ternary and degree n n-ary.</p>
+</blockquote>
+
+<p>Since relations are sets, all of the usual set operations apply to them. Codd explains 5 possible ones. Among them is the <em>join</em> operation.</p>
+
+<p>Suppose we’re given two binary relations, with a domain in common. Under what circumstances can we combine these relations to form a ternary relation which preserves all of the information in the given relations?</p>
+
+<p>There are two relations \( R \) and \( S \), which can be joined without loss of information.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>\( R \)</th>
+      <th>(supplier</th>
+      <th>part)</th>
+      <th>\( S \)</th>
+      <th>(part</th>
+      <th>project)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td> </td>
+      <td>1</td>
+      <td>1</td>
+      <td> </td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>2</td>
+      <td>1</td>
+      <td> </td>
+      <td>1</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>2</td>
+      <td>2</td>
+      <td> </td>
+      <td>2</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>A binary relation \( R \) is <em>joinable</em> with a binary relation \( S \) if there exists a ternary relation \( U \) such that \( a_{12}(U) = R \) and \( a_{23}(U) = S \). Any one of these ternary relations is called a join of \( R \) with \( S \).</p>
+
+<p>If \( R \), \( S \) are binary relations such that \( a_2(R) = a_1(S) \), then \( R \) is able to be joined with \( S \).</p>
+
+<p>One join that always exists in such a case is the <em>natural join</em> of \( R \) with \( S \) defined as:</p>
+
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mo>∗</mo><mi>S</mi><mo>=</mo><mrow><mo stretchy="false">(</mo><mi>a</mi><mo separator="true">,</mo><mi>b</mi><mo separator="true">,</mo><mi>c</mi><mo stretchy="false">)</mo><mo>:</mo><mi>R</mi><mo stretchy="false">(</mo><mi>a</mi><mo separator="true">,</mo><mi>b</mi><mo stretchy="false">)</mo><mtext> </mtext><mo>∧</mo><mi>S</mi><mo stretchy="false">(</mo><mi>b</mi><mo separator="true">,</mo><mi>c</mi><mo stretchy="false">)</mo></mrow></mrow><annotation encoding="application/x-tex">R * S = { (a, b, c):R(a, b) \ \wedge S(b, c) }</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mopen">(</span><span class="mord mathdefault">a</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">b</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">c</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">:</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mopen">(</span><span class="mord mathdefault">a</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">b</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mspace"> </span><span class="mbin">∧</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span><span class="mopen">(</span><span class="mord mathdefault">b</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mord mathdefault">c</span><span class="mclose">)</span></span></span></span></span></span>
+
+<p>Where \( R(a, b) \) has the value <em>true</em> if \( (a, b) \) is a member of \( R \) and similarly for \( S(b, c) \). It’s immediate that</p>
+
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mn>12</mn></msub><mo stretchy="false">(</mo><mi>R</mi><mo>∗</mo><mi>S</mi><mo stretchy="false">)</mo><mo>=</mo><mi>R</mi></mrow><annotation encoding="application/x-tex">a_{12}(R * S) = R</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span><span class="mord mtight">2</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span></span></span></span></span>
+
+<p>and</p>
+
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mn>23</mn></msub><mo stretchy="false">(</mo><mi>R</mi><mo>∗</mo><mi>S</mi><mo stretchy="false">)</mo><mo>=</mo><mi>S</mi></mrow><annotation encoding="application/x-tex">a_{23}(R * S) = S</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="mord mtight">3</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span></span></span></span></span>
+
+<h5 id="whats-a-join">What’s a Join?</h5>
+
+<p>In simple words, a <em>join</em> is a constituent component of a statement and/or a query used to collate the data (or rows) from one or more tables  based on a common field between them.</p>
+
+<p>It’s the act of connecting related tables or sets of data based on key values (column, column value). For it to work in a relational model is needed that all tables contain a unique identifier (primary key), and this way any related table contains a copy (same value, same data type) of that unique identifier (foreign key).</p>
+
+<h5 id="theta-join-equijoin">Theta Join. Equijoin</h5>
+
+<p>To start explaining what the <em>theta join</em> is, first is needed to know about <em>the product</em>.  The product is (as its name says) the product between two tables <em>R</em> and <em>S</em>, expressed as <em>R \( \times \) S</em>. Pretty much as the Cartesian product of both <em>R</em> and <em>S</em> is obtained.</p>
+
+<p><em>R \( \times \) S</em> forms a table by concatenating all rows from the table <em>R</em> with all rows from the table <em>S</em>. The columns are all the columns of both <em>R</em> and <em>S</em> tables correspondingly, and the total of rows is the sum of the total rows in <em>R</em> and the total rows in <em>S</em>.</p>
+
+<p>The most common way to get a product table is by using a <em>nested loop</em> algorithm. To do so the first row of <em>R</em> it’s merged with the first row of <em>S</em>, then with the second row of <em>S</em>. This way subsequently until reaching the last element in <em>S</em>.  The operation is repeated with the second row of <em>R</em>, the third, fourth, etc.</p>
+
+<p>The total rows of <em>the product</em> of <em>R \( \times \) S</em> are \( x \times y \) rows, where <em>x</em> is the total of rows in <em>R</em> and <em>y</em> is the total of rows in <em>S</em>. As an example, the total of rows in users is 6 and the total of rows in posts is 15, <em>the product</em> contains 90 rows.</p>
+
+<p>The result of executing a <em>select</em> operation on <em>the product</em> is represented as the <em>theta join</em>. The symbol used to represent it is \( |x|_0 \).</p>
+
+<p>For the tables <em>R</em> and <em>S</em>, the theta join is defined as:</p>
+
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>R</mi><mtext> </mtext><mi mathvariant="normal">∣</mi><mi>x</mi><msub><mi mathvariant="normal">∣</mi><mn>0</mn></msub><mtext> </mtext><mi>S</mi><mtext> </mtext><mo>=</mo><mtext> </mtext><msub><mi>σ</mi><mn>0</mn></msub><mo stretchy="false">(</mo><mi>R</mi><mtext> </mtext><mo>×</mo><mtext> </mtext><mi>S</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">R~|x|_0~S~=~\sigma_0(R~\times~S)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mspace nobreak"> </span><span class="mord">∣</span><span class="mord mathdefault">x</span><span class="mord"><span class="mord">∣</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace nobreak"> </span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mspace nobreak"> </span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mspace nobreak"> </span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathdefault" style="margin-right:0.00773em;">R</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mspace nobreak"> </span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mspace nobreak"> </span><span class="mord mathdefault" style="margin-right:0.05764em;">S</span><span class="mclose">)</span></span></span></span></span>
+
+<p>For instance, we can get the rows from the product of <em>R</em> and <em>S</em> where <em>words_count</em> is greater than 2771 (second post). This is represented as:</p>
+
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>σ</mi><mrow><mi>w</mi><mi>o</mi><mi>r</mi><mi>d</mi><mi>s</mi><mi mathvariant="normal">_</mi><mi>c</mi><mi>o</mi><mi>u</mi><mi>n</mi><mi>t</mi><mtext> </mtext><mo>&gt;</mo><mtext> </mtext><mn>2771</mn></mrow></msub><mtext> </mtext><mo stretchy="false">(</mo><mi>u</mi><mi>s</mi><mi>e</mi><mi>r</mi><mi>s</mi><mtext> </mtext><mo>×</mo><mtext> </mtext><mi>p</mi><mi>o</mi><mi>s</mi><mi>t</mi><mi>s</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\sigma_{words\_count~&gt;~2771}~(users~\times~posts)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.117em;vertical-align:-0.367em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.03588em;">σ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.02691em;">w</span><span class="mord mathdefault mtight">o</span><span class="mord mathdefault mtight" style="margin-right:0.02778em;">r</span><span class="mord mathdefault mtight">d</span><span class="mord mathdefault mtight">s</span><span class="mord mtight" style="margin-right:0.02778em;">_</span><span class="mord mathdefault mtight">c</span><span class="mord mathdefault mtight">o</span><span class="mord mathdefault mtight">u</span><span class="mord mathdefault mtight">n</span><span class="mord mathdefault mtight">t</span><span class="mspace nobreak mtight"><span class="mtight"> </span></span><span class="mrel mtight">&gt;</span><span class="mspace nobreak mtight"><span class="mtight"> </span></span><span class="mord mtight">2</span><span class="mord mtight">7</span><span class="mord mtight">7</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.367em;"><span></span></span></span></span></span></span><span class="mspace nobreak"> </span><span class="mopen">(</span><span class="mord mathdefault">u</span><span class="mord mathdefault">s</span><span class="mord mathdefault">e</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">s</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mspace nobreak"> </span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mspace nobreak"> </span><span class="mord mathdefault">p</span><span class="mord mathdefault">o</span><span class="mord mathdefault">s</span><span class="mord mathdefault">t</span><span class="mord mathdefault">s</span><span class="mclose">)</span></span></span></span></span>
+
+<p>In PostgreSQL this might be as:</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">users</span>
+<span class="k">CROSS</span> <span class="k">JOIN</span> <span class="n">posts</span>
+<span class="k">WHERE</span> <span class="n">words_count</span> <span class="o">&gt;</span> <span class="mi">2771</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>The <em>cross join</em> clause used allows us to produce the Cartesian product between two or more tables.</p>
+
+<p>A <em>theta join</em> is then the result of a selection operation in <em>the product</em> by using any binary relational operator \(&gt; \), \( \geqslant \), \( = \), \( \neq \), \( \leqslant \), \( &lt; \).</p>
+
+<p>If the operator used is equality (<em>=</em>), then the join is also called <em>equijoin</em>.</p>
+
+<h5 id="natural-join">Natural Join</h5>
+
+<p>The natural join is the easiest part to start explaining the concept of SQL join. Given the query “Get all user names and post titles from users who have written a post” the following SQL returns what we need:</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">name</span><span class="p">,</span> <span class="n">title</span>
+<span class="k">FROM</span> <span class="n">users</span><span class="p">,</span> <span class="n">posts</span>
+<span class="k">WHERE</span> <span class="n">users</span><span class="p">.</span><span class="n">user_id</span> <span class="o">=</span> <span class="n">posts</span><span class="p">.</span><span class="n">user_id</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>What we’re doing here is trying to match a certain condition to pick up the rows from both tables when it succeeds. The condition required is <em>users.user_id</em> must be equal to <em>posts.user_id</em>. These two columns are the only ones in both tables with the same name. And, for the sake of simplicity SQL supports an operation called <em>natural join</em> (and several different ways to join information from 1 or more tables).</p>
+
+<p>The last query was nothing more than a Cartesian product with a where clause where we extracted information from two tables, without really creating a relationship between them. What we need now is to get the job done but using a join clause.</p>
+
+<p>The natural join operation receives two (or more) tables and returns a third table as its result, often referred to as a “logical table”. It considers only those pairs of rows with the same value on those columns in both tables, as opposed to the Cartesian product between two tables, which links each row of the table to the left of the operator with every row of the table to the right of the operator.</p>
+
+<p>The example shown before can be expressed using the natural join operation as:</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">name</span><span class="p">,</span> <span class="n">title</span>
+<span class="k">FROM</span> <span class="n">users</span> <span class="k">NATURAL</span> <span class="k">JOIN</span> <span class="n">posts</span><span class="p">;</span>
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>name</th>
+      <th>title</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Diego Barton</td>
+      <td>OpenAI Hide-and-Seek Findings, the Systems Perspective</td>
+    </tr>
+    <tr>
+      <td>Salina Hill</td>
+      <td>Lilly Singhs Late Night Show Is an Uneasy Compromise for Everyone</td>
+    </tr>
+    <tr>
+      <td>Salina Hill</td>
+      <td>Can You Trust Facebook with your Love Life?</td>
+    </tr>
+    <tr>
+      <td>Diego Barton</td>
+      <td>How Netflix Binges and Google Translate Helped Me Find Love</td>
+    </tr>
+    <tr>
+      <td>Earlie Harber</td>
+      <td>The Mystical Side of A.I.</td>
+    </tr>
+    <tr>
+      <td>Salina Hill</td>
+      <td>Start Before You’re Ready</td>
+    </tr>
+    <tr>
+      <td>Landon Legros</td>
+      <td>Why Reading Poetry Can Make You a Better Leader</td>
+    </tr>
+    <tr>
+      <td>Douglas Bartoletti</td>
+      <td>Stop Copying Your Heroes</td>
+    </tr>
+    <tr>
+      <td>Salina Hill</td>
+      <td>The Case for Being a Multi-Hyphenate</td>
+    </tr>
+    <tr>
+      <td>Landon Legros</td>
+      <td>To Do Better Work, Change Your Environment</td>
+    </tr>
+    <tr>
+      <td>Salina Hill</td>
+      <td>My Startup Could’ve Exploited Gig Economy Workers - Heres Why We Didn’t</td>
+    </tr>
+    <tr>
+      <td>Landon Legros</td>
+      <td>The Women Behind Controversial At-Home Rape Kits Speak Out</td>
+    </tr>
+    <tr>
+      <td>Douglas Bartoletti</td>
+      <td>Why Your Startup Isn’t Being Funded and What to Do About It</td>
+    </tr>
+    <tr>
+      <td>Diego Barton</td>
+      <td>Daredevil Unicorns: Why Juul, Uber, And Other Companies Play With Fire</td>
+    </tr>
+    <tr>
+      <td>Salina Hill</td>
+      <td>The Surprisingly Effective Impact of Becoming a Connector Manager</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>It results in the same, but it considers only those pairs of rows with both users and posts having the same values for the column in common - <em>user_id</em>. Giving a table with only 15 rows where there are no repeated values, nor for users, nor posts.</p>
+
+<p>The order in which the columns are returned when it isn’t specified follows a particular rule; first are the columns in common with the tables used, second the columns existing only to the left of the <em>natural join</em> sentence and lastly the columns existing only in the table to the right of the operator. The result of a <em>natural join</em> is a new relation.</p>
+
+<p>The query is also executed in a specific order, first by its <em>from</em> clause, following by the <em>where</em> clause and then <em>select</em> one.</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">users</span>
+<span class="k">NATURAL</span> <span class="k">JOIN</span> <span class="n">posts</span> <span class="k">LIMIT</span> <span class="mi">5</span><span class="p">;</span>
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>user_id</th>
+      <th>name</th>
+      <th>post_id</th>
+      <th>title</th>
+      <th>words_count</th>
+      <th>publishing_year</th>
+      <th>rating</th>
+      <th>category_id</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>5</td>
+      <td>Diego B.</td>
+      <td>1</td>
+      <td>OpenAI Hide-and…</td>
+      <td>1884</td>
+      <td>2017</td>
+      <td>3</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Salina H.</td>
+      <td>2</td>
+      <td>Lilly Singhs Late…</td>
+      <td>2771</td>
+      <td>2016</td>
+      <td>5</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Salina H.</td>
+      <td>3</td>
+      <td>Can You Trust…</td>
+      <td>3519</td>
+      <td>2019</td>
+      <td>4</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Diego B.</td>
+      <td>4</td>
+      <td>How Netflix Binges…</td>
+      <td>2643</td>
+      <td>2018</td>
+      <td>4</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Earlie H.</td>
+      <td>5</td>
+      <td>The Mystical Side…</td>
+      <td>2819</td>
+      <td>2016</td>
+      <td>2</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The <code class="highlighter-rouge">from</code> clause can easily be chained for multiple table names, following the form:</p>
+
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>SELECT </mtext><msub><mi>A</mi><mn>1</mn></msub><mo separator="true">,</mo><mtext> </mtext><msub><mi>A</mi><mn>2</mn></msub><mo separator="true">,</mo><mtext> </mtext><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mo separator="true">,</mo><mtext> </mtext><msub><mi>A</mi><mi>n</mi></msub><mspace linebreak="newline"></mspace><mtext>FROM </mtext><msub><mi>r</mi><mn>1</mn></msub><mtext> NATURAL JOIN </mtext><msub><mi>r</mi><mn>2</mn></msub><mtext> NATURAL JOIN </mtext><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mtext> NATURAL JOIN </mtext><msub><mi>r</mi><mi>m</mi></msub><mspace linebreak="newline"></mspace><mtext>WHERE </mtext><mi>P</mi><mo separator="true">;</mo></mrow><annotation encoding="application/x-tex">\text{SELECT}~A_1,~A_2,~...,~A_n\\
+\text{FROM}~r_1~\text{NATURAL JOIN}~r_2~\text{NATURAL JOIN}~...~\text{NATURAL JOIN}~r_m\\
+\text{WHERE}~P;</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord text"><span class="mord">SELECT</span></span><span class="mspace nobreak"> </span><span class="mord"><span class="mord mathdefault">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace nobreak"> </span><span class="mord"><span class="mord mathdefault">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace nobreak"> </span><span class="mord">.</span><span class="mord">.</span><span class="mord">.</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace nobreak"> </span><span class="mord"><span class="mord mathdefault">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord text"><span class="mord">FROM</span></span><span class="mspace nobreak"> </span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace nobreak"> </span><span class="mord text"><span class="mord">NATURAL JOIN</span></span><span class="mspace nobreak"> </span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace nobreak"> </span><span class="mord text"><span class="mord">NATURAL JOIN</span></span><span class="mspace nobreak"> </span><span class="mord">.</span><span class="mord">.</span><span class="mord">.</span><span class="mspace nobreak"> </span><span class="mord text"><span class="mord">NATURAL JOIN</span></span><span class="mspace nobreak"> </span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">m</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord text"><span class="mord">WHERE</span></span><span class="mspace nobreak"> </span><span class="mord mathdefault" style="margin-right:0.13889em;">P</span><span class="mpunct">;</span></span></span></span></span>
+
+<p>Consider the case where we want to add the category of those posts written by each user. It’d involve adding a third table to the operation. This can be done as seen before, appending the needed table name to the <em>from</em> clause. A <em>natural join</em> will first compute the table to the left of the operator plus the first table to the right of the operator, resulting in a Cartesian product used to compute the <em>join</em> with the following table to the right of the <em>natural join</em>.</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">users</span><span class="p">.</span><span class="n">name</span><span class="p">,</span> <span class="n">posts</span><span class="p">.</span><span class="n">title</span><span class="p">,</span> <span class="n">categories</span><span class="p">.</span><span class="n">name</span>
+<span class="k">FROM</span> <span class="n">users</span>
+<span class="k">NATURAL</span> <span class="k">JOIN</span> <span class="n">posts</span><span class="p">,</span> <span class="n">categories</span>
+<span class="k">WHERE</span> <span class="n">posts</span><span class="p">.</span><span class="n">category_id</span> <span class="o">=</span> <span class="n">categories</span><span class="p">.</span><span class="n">category_id</span> <span class="k">LIMIT</span> <span class="mi">5</span><span class="p">;</span>
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>name</th>
+      <th>title</th>
+      <th>name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Diego Barton</td>
+      <td>OpenAI Hide-and-Seek Findings,</td>
+      <td>startups</td>
+    </tr>
+    <tr>
+      <td>Salina Hill</td>
+      <td>Lilly Singhs Late Night Show I</td>
+      <td>creativity</td>
+    </tr>
+    <tr>
+      <td>Salina Hill</td>
+      <td>Can You Trust Facebook with yo</td>
+      <td>startups</td>
+    </tr>
+    <tr>
+      <td>Diego Barton</td>
+      <td>How Netflix Binges and Google</td>
+      <td>creativity</td>
+    </tr>
+    <tr>
+      <td>Earlie Harber</td>
+      <td>The Mystical Side of A.I.</td>
+      <td>technology</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The <em>natural join</em> result is affected by the extraction of those rows on the left side of the operator matching by its identifier with those rows to the right of the operator. In the example used, the <em>where</em> clause  tries to satisfy the match condition using the common columns between <em>posts</em> and <em>categories</em>, but the <em>posts.category_id</em>  points to the <em>natural join</em> result of <em>users</em> and <em>posts</em>.</p>
+
+<p>The syntax shown before is not a short version of:</p>
+
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>NATURAL JOIN </mtext><msub><mi>r</mi><mn>2</mn></msub><mtext> NATURAL JOIN </mtext><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mtext> NATURAL JOIN </mtext><msub><mi>r</mi><mi>m</mi></msub><mspace linebreak="newline"></mspace></mrow><annotation encoding="application/x-tex">\text{NATURAL JOIN}~r_2~\text{NATURAL JOIN}~...~\text{NATURAL JOIN}~r_m \\</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord text"><span class="mord">NATURAL JOIN</span></span><span class="mspace nobreak"> </span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace nobreak"> </span><span class="mord text"><span class="mord">NATURAL JOIN</span></span><span class="mspace nobreak"> </span><span class="mord">.</span><span class="mord">.</span><span class="mord">.</span><span class="mspace nobreak"> </span><span class="mord text"><span class="mord">NATURAL JOIN</span></span><span class="mspace nobreak"> </span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">m</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span><span class="mspace newline"></span></span></span></span>
+
+<p>The result of the following query using the referred syntax returns no rows:</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">users</span><span class="p">.</span><span class="n">name</span><span class="p">,</span> <span class="n">posts</span><span class="p">.</span><span class="n">title</span><span class="p">,</span> <span class="n">categories</span><span class="p">.</span><span class="n">name</span>
+<span class="k">FROM</span> <span class="n">users</span>
+<span class="k">NATURAL</span> <span class="k">JOIN</span> <span class="n">posts</span>
+<span class="k">NATURAL</span> <span class="k">JOIN</span> <span class="n">categories</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>The reason is that the result of the <em>natural join</em> between <em>users</em> and <em>posts</em> contains the columns are <em>user_id</em>, <em>name</em>, <em>post_id</em>, <em>title</em>, <em>words_count</em>, <em>publishing_year</em>, <em>rating</em>, and <em>category_id</em>. While the columns present in a <em>natural join</em> between <em>posts</em> and <em>categories</em> are <em>name</em>, <em>user_id</em>, <em>category_id</em>. A <em>natural join</em> would evidently ask for the column <em>category_id</em> to be present in the <em>users</em> table, which isn’t. So the query shown above omits all those results where the user doesn’t have a category_id, resulting in 0 rows.</p>
+
+<p>To get the expected result from the last query we can use the <em>join … using</em> operation. Which expects one or more columns to be added to the <em>using</em> clause. Then the tables being joined must contain those columns:</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">users</span><span class="p">.</span><span class="n">name</span><span class="p">,</span> <span class="n">posts</span><span class="p">.</span><span class="n">title</span><span class="p">,</span> <span class="n">categories</span><span class="p">.</span><span class="n">name</span>
+<span class="k">FROM</span> <span class="p">(</span><span class="n">users</span> <span class="k">NATURAL</span> <span class="k">JOIN</span> <span class="n">posts</span><span class="p">)</span>
+<span class="k">JOIN</span> <span class="n">categories</span> <span class="k">USING</span> <span class="p">(</span><span class="n">category_id</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>The operation:</p>
+
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>r</mi><mn>1</mn></msub><mtext> join using</mtext><mo stretchy="false">(</mo><msub><mi>A</mi><mn>1</mn></msub><mo separator="true">,</mo><mtext> </mtext><msub><mi>A</mi><mn>2</mn></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">r_1~\text{join}~\text{using}(A_1,~A_2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace nobreak"> </span><span class="mord text"><span class="mord">join</span></span><span class="mspace nobreak"> </span><span class="mord text"><span class="mord">using</span></span><span class="mopen">(</span><span class="mord"><span class="mord mathdefault">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.16666666666666666em;"></span><span class="mspace nobreak"> </span><span class="mord"><span class="mord mathdefault">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span>
+
+<p>Is similar to the <em>natural join</em>:</p>
+
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>r</mi><mn>1</mn></msub><mtext> natural join </mtext><msub><mi>r</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">r_1~\text{natural join}~r_2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8888799999999999em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace nobreak"> </span><span class="mord text"><span class="mord">natural join</span></span><span class="mspace nobreak"> </span><span class="mord"><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.02778em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span>
+
+<p>Except that a pair of rows \( s_1 \) from \( r_1 \) and \( s_2 \) from \( r_2 \) match if \( s_2.A_1 = s_2.A_1 \) and \( s_1.A_2 = s_2.A_2 \). If \( r_1 \) and \( r_2 \) both have a column \( A_3 \). It’s not mandatory that \( s_1.A_3 = s_2.A_3 \).</p>
+
+<h5 id="inner-join">Inner Join</h5>
+
+<p>There are different ways to perform a <em>join</em> as per the SQL Standard. The most used and common is the <em>inner join</em>.</p>
+
+<p>An <em>inner join</em> linking the tables <em>users</em> and <em>posts</em> (using the <em>user_id</em> column from both tables) returns only those rows from the table <em>users</em> “linked” with those from the <em>posts</em> table, meaning a link as the match between the value of <em>user_id</em> in both tables. This way all rows that aren’t able to be linked aren’t added to the “logical table”.</p>
+
+<p>The main part in an <em>inner join</em> is the one that tells the database how to perform the <em>join</em>; the <em>on</em> or <em>using</em> clauses right after the second table in the condition.</p>
+
+<p>The operation is executed first by logically combining every row from the table to the left side of the operator with every row of the table to the right side of the operator - the Cartesian product between both tables. Then it applies the criteria used in the <em>on</em> or <em>using</em> clauses to select those rows that match and return them. The search (or match condition) in  the <em>on</em> clause tells to the <em>join</em> the logical test that must be true to return any two linked rows.</p>
+
+<p>Let’s use the example used in the <em>natural join</em> section:  “Get all users names and post titles from users who have written a post”.</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">name</span><span class="p">,</span> <span class="n">title</span>
+<span class="k">FROM</span> <span class="n">users</span>
+<span class="k">INNER</span> <span class="k">JOIN</span> <span class="n">posts</span>
+<span class="k">ON</span> <span class="n">users</span><span class="p">.</span><span class="n">user_id</span> <span class="o">=</span> <span class="n">posts</span><span class="p">.</span><span class="n">user_id</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>When using multiple tables in a <em>from</em> clause is preferred to always do explicit mention of the tables holding the columns we’re using. The column <em>name</em> is only present in the <em>users</em> table, as well as the <em>title</em> column only in the <em>posts</em> table, that’s why in this query isn’t needed to prefix the table names before the column names. But we will always do this with the <em>on</em> clause.</p>
+
+<p>We can achieve the same result with the <em>using</em> clause. Where we don’t have to add the table names as the columns prefixes, as it takes the matching pair of the column from both tables:</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">name</span><span class="p">,</span> <span class="n">title</span>
+<span class="k">FROM</span> <span class="n">users</span>
+<span class="k">INNER</span> <span class="k">JOIN</span> <span class="n">posts</span>
+<span class="k">USING</span><span class="p">(</span><span class="n">user_id</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>In both cases, the database evaluates the complete <em>join</em> clause before to start retrieving rows. In most of the cases, a row <em>a</em>  is first fetched from the table to the left side of the operator. Then the database makes use of an internal link (an index if defined) to fastly find any rows in the table to the right side of the operator that matches the row <em>a</em> before moving to the next row in the current table.</p>
+
+<h5 id="join-conditions">Join Conditions</h5>
+
+<p>Besides the <em>natural join</em>, SQL supports a similar kind of join where you can make use of arbitrary conditions.</p>
+
+<p>An <em>on</em> condition allows the tables to be joined over a general predicate. The predicate is written like using a <em>where</em> clause predicate, the only difference is the use of the keyword <em>on</em>, instead of <em>where</em>. Similar to the <em>using</em> condition, <em>on</em> is always added at the end of a <em>join</em> expression.</p>
+
+<p>To get all the columns from both users and posts tables where the <em>users.user_id</em> column is equal to the <em>posts.user_id</em> (with a limit of 5 for the sake of brevity) we would use a query like the following:</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">users</span> <span class="k">JOIN</span> <span class="n">posts</span>
+<span class="k">ON</span> <span class="n">users</span><span class="p">.</span><span class="n">user_id</span> <span class="o">=</span> <span class="n">posts</span><span class="p">.</span><span class="n">user_id</span> <span class="k">LIMIT</span> <span class="mi">5</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>(the table name prefixes are used to disambiguate the columns used for the match in both tables)</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>user_id</th>
+      <th>name</th>
+      <th>post_id</th>
+      <th>title</th>
+      <th>words_count</th>
+      <th>publishing_year</th>
+      <th>rating</th>
+      <th>category_id</th>
+      <th>user_id</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>5</td>
+      <td>Diego B.</td>
+      <td>1</td>
+      <td>OpenAI Hide-and-Seek …</td>
+      <td>1884</td>
+      <td>2017</td>
+      <td>3</td>
+      <td>3</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Salina H.</td>
+      <td>2</td>
+      <td>Lilly Singhs Late …</td>
+      <td>2771</td>
+      <td>2016</td>
+      <td>5</td>
+      <td>2</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Salina H.</td>
+      <td>3</td>
+      <td>Can You Trust Facebook …</td>
+      <td>3519</td>
+      <td>2019</td>
+      <td>4</td>
+      <td>3</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Diego B.</td>
+      <td>4</td>
+      <td>How Netflix Binges …</td>
+      <td>2643</td>
+      <td>2018</td>
+      <td>4</td>
+      <td>2</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Earlie H.</td>
+      <td>5</td>
+      <td>The Mystical Side …</td>
+      <td>2819</td>
+      <td>2016</td>
+      <td>2</td>
+      <td>1</td>
+      <td>2</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The <em>on</em> condition in the above query establishes that a row from <em>users</em> matches a row from <em>posts</em> if the value of <em>user_id</em> is equal in both rows. There’s an evident similarity of the <em>on</em> clause used and the <em>natural join</em> expressions seen before. With the <em>natural join</em> rows in the <em>users</em> table had to match with the ones in the <em>posts</em> table. The result of a <em>join</em> adds twice the column from the condition (first and last columns), while the <em>natural join</em> result doesn’t.</p>
+
+<p>An alternative to the last query would be using <em>where</em> to check if both columns in each row of both tables match:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SELECT *
+FROM users, posts
+WHERE users.user_id = posts.user_id;
+</code></pre></div></div>
+
+<p>In this case, the <em>user_id</em> is also twice in the result. To avoid getting unnecessary columns, listing the needed columns is always an option.</p>
+
+<p>Using the <em>on</em> condition allows us to express any SQL predicate, thus using <em>join</em>  expressions with <em>on</em> conditions we get more flexibility while expressing the matching conditions we need.</p>
+
+<p>The <em>on</em> condition might seem useless as we can get a similar join result using <em>where</em> instead of a <em>join … on</em> operation. But there are two good reasons for the <em>on</em> condition to exist. In an <em>outer join</em> operation, the <em>where</em> conditions don’t work as seen before. The <em>on</em> clause also offers more readability at the moment of composing queries since is easier to read and understand a query when the <em>on</em> clause holds the <em>join</em> condition, and the rest does it the <em>where</em> clause.</p>
+
+<p>It’s very common to <em>join</em> tables by using the primary key from one table in conjunction with its foreign key in another table. But this isn’t mandatory. A <em>join</em> can be performed as long as both columns are of the same data type. Any column of type char can be joined with another column of the same type, as well as integer columns from table <em>A</em> to an integer column in a table <em>B</em>, and so on.</p>
+
+<p>The latter is perfectly valid but is always up to the user to make them work in a valid context and under the same meaning.</p>
+
+<p>A recommendation when working with <em>join</em>, no matter the number of tables and <em>on</em> conditions being used, it’s always better to explicitly state the type of <em>join</em> to use and to qualify the used column names with the name of their parents’ tables.</p>
+
+<h5 id="outer-joins">Outer Joins</h5>
+
+<p>If we need to get all the users and display all their columns plus the columns from the posts table in case they have written a post, a query like the following should work:</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">users</span> <span class="k">NATURAL</span> <span class="k">JOIN</span> <span class="n">posts</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>But it doesn’t. If there are users that haven’t written a post, then the row in the <em>users</em> table corresponding to that user won’t match the condition of the <em>natural join</em>, which implies the <em>user_id</em> in the row in the table to the left of the operator must match with the <em>user_id</em>  of the row of the table to the right of the operator (in this case by the <em>user_id</em>), thus that row won’t be taken into account for the result given.</p>
+
+<p>The <em>outer join</em> operation works in a similar way to the <em>join</em> operations, but instead of discarding the rows not matching the specified criteria, it preserves them. It does so by creating rows with <em>NULL</em> values in the result of the operation.</p>
+
+<p>To exemplify, in the latter example there’s one row from the <em>users</em> table that doesn’t have any post. That’s to say, there’s no row in the <em>posts</em> table with <em>user_id</em> equal to the id of the only user that hasn’t written a post. So, when executing the query containing the <em>outer join</em>, a row containing all the values from the user that didn’t write a post is added to the join result. In the same way, all the values corresponding to the columns in the <em>posts</em> table are added to the row created before, but this time with all its values as <em>NULL</em>. This way the row for that user is preserved in the result of the <em>outer join</em>.</p>
+
+<h5 id="outer-join-forms">Outer Join forms</h5>
+
+<ul>
+  <li>
+    <p>A <em>left outer join</em> preserves only the rows from the table to the left of the operation (<em>left outer join</em>).</p>
+  </li>
+  <li>
+    <p>A <em>right outer join</em> preserves only the rows from the table to the right of the operation (<em>right outer join</em>).</p>
+  </li>
+  <li>
+    <p>A <em>full outer join</em> preserves the rows in both tables.</p>
+  </li>
+</ul>
+
+<p><br /></p>
+
+<p>The join operations that don’t preserve the rows that don’t match are called <em>inner-join</em> operations. Their exact opposite is called <em>outer-join</em> operations.</p>
+
+<p>An <em>outer join</em> first computes its <em>inner join</em> operations in sequential order, then for every row <em>a</em> in the table to the left of the operator that doesn’t match any row in the table to the right of the operator in the <em>inner join</em>, it adds a row <em>b</em> to the result of the <em>join</em> following the next rules:</p>
+
+<ul>
+  <li>All the columns of the <em>b</em> row from the table to the left of the operator have the values of the row <em>a</em>.</li>
+  <li>All the remaining columns of <em>b</em> are then <em>NULL</em> values (this depends on the RDBMS being used, PostgreSQL returns an empty column).</li>
+</ul>
+
+<p>The difference between a <em>natural … outer join</em> and a <em>… outer join … on</em> is as shown before, they return the same columns and rows, but the last one adds twice the column used for the match condition:</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span>                                   <span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">users</span>                                 <span class="k">FROM</span> <span class="n">users</span>
+<span class="k">NATURAL</span> <span class="k">LEFT</span> <span class="k">OUTER</span> <span class="k">JOIN</span> <span class="n">posts</span><span class="p">;</span>             <span class="k">LEFT</span> <span class="k">OUTER</span> <span class="k">JOIN</span> <span class="n">posts</span>
+                                           <span class="k">ON</span> <span class="n">users</span><span class="p">.</span><span class="n">user_id</span> <span class="o">=</span> <span class="n">posts</span><span class="p">.</span><span class="n">user_id</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Both <em>left outer join</em> and <em>right outer join</em> are uniform operations. Rows in the right-hand-side table that don’t match any other row in the left-hand-side table take <em>NULL</em> values and are appended to the result of the <em>right outer join</em>.</p>
+
+<p>The result of a <em>left outer join</em> operation can be achieved from a <em>right outer join</em> if we interchange the order of the tables in the operation:</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span>                                   <span class="k">SELECT</span> <span class="o">*</span>                     
+<span class="k">FROM</span> <span class="n">users</span>                                 <span class="k">FROM</span> <span class="n">posts</span> 
+<span class="k">NATURAL</span> <span class="k">LEFT</span> <span class="k">OUTER</span> <span class="k">JOIN</span> <span class="n">posts</span><span class="p">;</span>             <span class="k">NATURAL</span> <span class="k">RIGHT</span> <span class="k">OUTER</span> <span class="k">JOIN</span> <span class="n">users</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>What differs is just the order in which the columns are listed.</p>
+
+<h5 id="full-outer-join">Full Outer Join</h5>
+
+<p>The combination of a <em>left</em> and <em>right</em> <em>outer-join</em> types produces a <em>full outer join</em>. It works similarly to an <em>outer join</em>, but right after the operation computes the result of the inner join, it adds <em>NULL</em> values to those rows from the table to the left side of the operator that doesn’t match with any row from the table to the right side of the operator, and pushes them to the result of the operation. It does the same with the rows of the table to the right side of the operator that doesn’t match with any row from the table to the left side of the operator. In the same way, it adds those rows to the result.</p>
+
+<p>In terms of correspondence, both the <em>left outer join</em> and the <em>right outer join</em> can be applied as their <em>union</em>.</p>
+
+<p>As with <em>left</em> and <em>right</em> <em>outer</em> joins, the <em>on</em> clause can be used to control the columns we’re expecting to match. The <em>on</em> and <em>where</em> clauses have different behavior for <em>outer join</em>. This is because <em>outer join</em> adds rows allowing <em>NULL</em> values for those rows that don’t match with the criteria specified in an <em>inner join</em>. The <em>join</em> specification incorporates the <em>on</em> condition on its own, but not the <em>where</em> clause.</p>
+
+<h5 id="joins-and-conditions">Joins and Conditions</h5>
+
+<p><em>inner join</em> is the name used to distinguish “normal” <em>joins</em> from <em>outer joins</em>. The <em>inner</em> keyword in an <em>inner join</em> is optional, and thus <em>inner join</em> is just used to emphasize the use of a normal join.</p>
+
+<p>Both following queries are equivalent:</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span>                                   <span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">users</span>                                 <span class="k">FROM</span> <span class="n">users</span>
+<span class="k">JOIN</span> <span class="n">posts</span> <span class="k">USING</span> <span class="p">(</span><span class="n">user_id</span><span class="p">);</span>                <span class="k">INNER</span> <span class="k">JOIN</span> <span class="n">posts</span> <span class="k">USING</span> <span class="p">(</span><span class="n">user_id</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>The same equivalence is for <em>natural join</em> and <em>natural inner join</em>.</p>
+
+<p>Any <em>join</em> form can be combined with any condition form, thinking on it as the Cartesian product between <em>join</em> types and <em>join</em> conditions.</p>
+
+<h5 id="self-join">Self-Join</h5>
+
+<p>A <em>self-join</em>  is joining a table with itself. It’s used when a table contains a reference to the same table through the combination of a primary key and a foreign key. Both columns are held within the table being used supported by the referential integrity constraint.</p>
+
+<p>Let’s exemplify by adding a new column to <em>posts</em> which makes mention to the same table to show the post that references the current post:</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">posts</span>
+<span class="k">ADD</span> <span class="k">COLUMN</span> <span class="n">reference_post_id</span> <span class="nb">INTEGER</span> <span class="k">REFERENCES</span> <span class="n">posts</span><span class="p">(</span><span class="n">post_id</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>We can assign any random post referrer to every post by using the referrer post_id value.</p>
+
+<p>This way we can get all the posts that have been referenced by using an <em>inner join</em> and selecting the <em>title</em> from both tables and distinguishing them by using aliases:</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">a</span><span class="p">.</span><span class="n">title</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">title</span> 
+<span class="k">FROM</span> <span class="n">posts</span> <span class="n">a</span>
+<span class="k">INNER</span> <span class="k">JOIN</span> <span class="n">posts</span> <span class="n">b</span> <span class="k">ON</span> <span class="n">a</span><span class="p">.</span><span class="n">post_id</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">reference_post_id</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Any possible condition used in a regular <em>join</em> can also be used in a self-join.</p>
+
+<div id="references" class="references">
+  <hr />
+</div>
+<h5 id="references">References</h5>
+
+<p>E. F. Codd. 1970. “A Relational Model of Data for Large Shared Data Banks” <a href="https://www.seas.upenn.edu/~zives/03f/cis550/codd.pdf">https://www.seas.upenn.edu/~zives/03f/cis550/codd.pdf</a>
+<br /><br /></p>
+
+<p>John L. Viescas. 2018 “SQL Queries for Mere Mortals: A Hands-On Guide to Data Manipulation in SQL, 4th Edition” <a href="https://www.pearson.com/us/higher-education/program/Viescas-SQL-Queries-for-Mere-Mortals-A-Hands-On-Guide-to-Data-Manipulation-in-SQL-4th-Edition/PGM1937355.html">https://www.pearson.com/us/higher-education/program/Viescas-SQL-Queries-for-Mere-Mortals-A-Hands-On-Guide-to-Data-Manipulation-in-SQL-4th-Edition/PGM1937355.html</a>
+<br /><br /></p>
+
+<p>“Table Expressions” <a href="https://www.postgresql.org/docs/12/queries-table-expressions.html">https://www.postgresql.org/docs/12/queries-table-expressions.html</a>
+<br /><br /></p>
+
+<p>Avi Silberschatz, Henry F. Korth, S. Sudarshan. 2019 “Database System Concepts 7th” <a href="https://www.db-book.com/db7/">https://www.db-book.com/db7/</a>
+<br /><br /></p>
+
+<p>Catherine Ricardo, Maxwell Macmillan. “Types of Joins: Theta Join, Equi-Join, Natural Join, Outer Join, Semi Join” <a href="https://zeepedia.com/toc.php?database_management_systems&amp;b=7">https://zeepedia.com/toc.php?database_management_systems&amp;b=7</a>
+<br /><br /></p>
+
+
+</div>
+
+<div class="pagination">
+  
+  
+
+  <a href="#" class="top">Top</a>
+</div>
+
+    </main>
+    <footer>
+  <span>
+    &copy; <time datetime="2019-10-09 13:56:49 +0300">2019</time> Chester How. Made with Jekyll using the <a href="https://github.com/chesterhow/tale/">Tale</a> theme.
+  </span>
+</footer>
+
+  </body>
+</html>
