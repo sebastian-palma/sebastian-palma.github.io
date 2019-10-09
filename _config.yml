@@ -1,0 +1,36 @@
+# Site settings
+title:          "Sebastián Palma"
+description:    "Things about programming and others."
+# baseurl:        "/tale"
+url:            "https://vnhnhm.github.io"
+
+# Google Analytics
+google_analytics: UA—XXXXXXXX-X
+
+# Author
+author:
+  name:         Chester How
+  url:          https://chester.how
+  email:        chesterhow@gmail.com
+
+# Build settings
+markdown:       kramdown
+kramdown:
+    math_engine: katex
+include:
+  - _pages
+
+# Assets
+sass:
+  sass_dir:     _sass
+  style:        compressed
+
+# Gems
+plugins:
+  - jekyll-feed
+  - jekyll-paginate
+  - jekyll-seo-tag
+
+# Permalinks
+permalink:      /:year-:month-:day/:title
+paginate:       10
