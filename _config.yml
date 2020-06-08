@@ -1,11 +1,10 @@
 # Site settings
 title:          "Sebastián Palma"
 description:    "Things about programming and others."
-# baseurl:        "/tale"
-url:            "https://vnhnhm.github.io"
+url:            "https://sebastian-palma.github.io/"
 
 # Google Analytics
-google_analytics: UA—XXXXXXXX-X
+google_analytics: UA-149489318-1
 
 # Author
 author:

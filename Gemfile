@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
-gem 'jekyll', '~> 4.0.0'
+gem 'jekyll'
 gem 'kramdown-math-katex'
 
 group :jekyll_plugins do

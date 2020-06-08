@@ -1,4 +1,4 @@
-I";�<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous" />
+I"a�<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous" />
 
 <script defer="" src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js" integrity="sha384-9Nhn55MVVN0/4OFx7EE5kpFBPsEMZxKTCnA+4fqDmg12eCTqGi6+BB2LjY8brQxJ" crossorigin="anonymous"></script>
 
@@ -342,7 +342,7 @@ Referring to \( S_1 \) as the jth domain of R. R is said to have degree n. Relat
   </tbody>
 </table>
 
-<p>The <code class="highlighter-rouge">from</code> clause can easily be chained for multiple table names, following the form:</p>
+<p>The <code class="language-plaintext highlighter-rouge">from</code> clause can easily be chained for multiple table names, following the form:</p>
 
 <span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>SELECT </mtext><msub><mi>A</mi><mn>1</mn></msub><mo separator="true">,</mo><mtext> </mtext><msub><mi>A</mi><mn>2</mn></msub><mo separator="true">,</mo><mtext> </mtext><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mo separator="true">,</mo><mtext> </mtext><msub><mi>A</mi><mi>n</mi></msub><mspace linebreak="newline"></mspace><mtext>FROM </mtext><msub><mi>r</mi><mn>1</mn></msub><mtext> NATURAL JOIN </mtext><msub><mi>r</mi><mn>2</mn></msub><mtext> NATURAL JOIN </mtext><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mi mathvariant="normal">.</mi><mtext> NATURAL JOIN </mtext><msub><mi>r</mi><mi>m</mi></msub><mspace linebreak="newline"></mspace><mtext>WHERE </mtext><mi>P</mi><mo separator="true">;</mo></mrow><annotation encoding="application/x-tex">\text{SELECT}~A_1,~A_2,~...,~A_n\\
 \text{FROM}~r_1~\text{NATURAL JOIN}~r_2~\text{NATURAL JOIN}~...~\text{NATURAL JOIN}~r_m\\
@@ -548,7 +548,7 @@ Referring to \( S_1 \) as the jth domain of R. R is said to have degree n. Relat
 
 <p>An alternative to the last query would be using <em>where</em> to check if both columns in each row of both tables match:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SELECT *
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SELECT *
 FROM users, posts
 WHERE users.user_id = posts.user_id;
 </code></pre></div></div>
