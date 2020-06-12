@@ -11,7 +11,7 @@ author: "Sebastián Palma"
 
 There are two methods in the Ruby on Rails framework that got my attention when I heard about them for the first time; `Enumerable#index_by` and `Enumerable#index_with`.
 
-While the first one is already more than 14 years old (added by [@seckar](https://github.com/seckar) in June 2006 - see [#a552651](https://github.com/rails/rails/commit/a55265132b37c6fb8ac15a96b44e64a64bcd4c45)), the other one was just introduced a couple of years ago. And they've remained untouched several years, just for a few performance updates, but clearly there's not much to do since the code is pretty simple:
+While the first one is already more than 14 years old (added by [@seckar](https://github.com/seckar) in June 2006 - see [#a552651](https://github.com/rails/rails/commit/a55265132b37c6fb8ac15a96b44e64a64bcd4c45)), the other one was introduced just a couple of years ago. And they've remained untouched several years just for a few performance updates, but clearly, there's not much to do since the code is pretty simple:
 
 
 
@@ -53,16 +53,18 @@ end
 
 People.new('John', 'Doe').login   # "john-doe"
 People.new('Lola', 'Lanos').login # "lola-lanos"
+
+people = [People.new('John', 'Doe'), People.new('Lola', 'Lanos')] # to be used
 ```
 
 
 
-Now if you happen to have multiple `people` instances in an `Enumerable` object, and you need to convert their current structure to a Hash, where each key is the current `people` object `login` value, and the value the object itself you can use `index_by` to shorten the amount of characters you'd do in plain Ruby:
+Now if you have multiple people instances in an Enumerable object, and you need to convert their current structure to a Hash, where each key is the current people object login value, and the value the object itself you can use `index_by` to shorten the number of characters you'd do in plain Ruby:
 
 
 
 ```ruby
-[People.new('John', 'Doe'), People.new('Lola', 'Lanos')].index_by(&:login)
+people.index_by(&:login)
 # {"john-doe"=>#<People:0x00007ff9429640e0 @first_name="John", @last_name="Doe">,
 #  "lola-lanos"=>#<People:0x00007ff94381ba48 @first_name="Lola", @last_name="Lanos">}
 ```
@@ -76,7 +78,7 @@ It's a very handy method, as it allows us passing whatever we need through the b
 ```ruby
 require 'securerandom'
 
-[People.new('John', 'Doe'), People.new('Lola', 'Lanos')].index_by do |person|
+people.index_by do |person|
   "#{person.login}-#{SecureRandom.hex(10)}"
 end
 
@@ -86,7 +88,7 @@ end
 
 
 
-The `securerandom` library is required to generate some random numbers and add an identifier to every person `login`, aiming to make each key unique - as you might know if the same key is set more than once on a `Hash`, the last is the one that preserves. The block code is then yielded inside the `index_by` method, as result every key takes the value of the `login` method invoked on the current object (`self`) interpolated with a random hexadecimal string of 10 digits created using the `SecureRandom` library.
+The `securerandom` library is required to generate some random numbers and add an identifier to every person `login`, aiming to make each key unique - as you might know, if the same key is set more than once on a `Hash`, the last is the one that preserves. The block code is then yielded inside the `index_by` method, as result every key takes the value of the `login` method invoked on the current object (`self`) interpolated with a random hexadecimal string of 10 digits created using the `SecureRandom` library.
 
 Finally, if the method is invoked without given a block it returns the receiver as an `Enumerator`  which is common when defining custom `Enumerable` methods - from the Ruby docs:
 
@@ -98,7 +100,7 @@ Finally, if the method is invoked without given a block it returns the receiver 
 
 The addition of `index_by` to the core code of Rails aims at making the conversion from one object to another easier to do and to read, but it might not be easy to get the idea without giving it some time to understand it.
 
-There are different ways in which you can do this kind of transformation, like using [`Array#each`](https://ruby-doc.org/core-2.6.5/Array.html#method-i-each) as in the method body of `index_by`, [`Enumerable#map`](https://ruby-doc.org/core-2.6.5/Enumerable.html#method-i-map),  [`Enumerable#each_with_object`](https://ruby-doc.org/core-2.6.5/Enumerable.html#method-i-each_with_object) or even [`Object#tap`](https://ruby-doc.org/core-2.7.1/Object.html#method-i-tap):
+There are different ways in which you can do this kind of transformation, like using [`Array#each`](https://ruby-doc.org/core-2.6.5/Array.html#method-i-each) as in the method body of `index_by`, [`Enumerable#map`](https://ruby-doc.org/core-2.6.5/Enumerable.html#method-i-map),  [`Enumerable#each_with_object`](https://ruby-doc.org/core-2.6.5/Enumerable.html#method-i-each_with_object), or even [`Object#tap`](https://ruby-doc.org/core-2.7.1/Object.html#method-i-tap):
 
 
 
@@ -109,7 +111,7 @@ Hash[people.map { |person| [person.login, person] }]
 
 
 
-This is probably the oldest you can see on internet (besides using `each`). It iterates over each element from the receiver, mapping them as an array where the first element is the result of invoking the `login` method on the current object, and the second and last element is the object itself. After that the result is used to create a new Hash by using the [`Hash::[]`](https://ruby-doc.org/core-2.6.5/Hash.html#method-c-5B-5D) method.
+This is probably the oldest you can see on the internet (besides using `each`). It iterates over each element from the receiver, mapping them as an array where the first element is the result of invoking the `login` method on the current object, and the second and last element is the object itself. After that the result is used to create a new Hash by using the [`Hash::[]`](https://ruby-doc.org/core-2.6.5/Hash.html#method-c-5B-5D) method.
 
 
 
@@ -131,7 +133,7 @@ people.each_with_object({}) { |person, hash| hash[person.login] = person }
 
 
 
-Another common way is to use [`Enumerable#each_with_object`](https://ruby-doc.org/core-2.6.5/Enumerable.html#method-i-each_with_object) and pass an empty Hash as the memo object (`memo_obj`) which is _filled_ by invoking `login` in the current object and assigning that result as one of the `memo_obj` keys, giving the current object as the value for that key. That returns a Hash itself, so it doesn't require any transformation, what makes the approach more clear and maybe the preferred one.
+Another common way is to use [`Enumerable#each_with_object`](https://ruby-doc.org/core-2.6.5/Enumerable.html#method-i-each_with_object) and pass an empty Hash as the memo object (`memo_obj`) which is _filled_ by invoking `login` in the current object and assigning that result as one of the `memo_obj` keys, giving the current object as the value for that key. That returns a Hash itself, so it doesn't require any transformation, which makes the approach more clear and maybe the preferred one.
 
 
 
@@ -142,7 +144,7 @@ Another common way is to use [`Enumerable#each_with_object`](https://ruby-doc.or
 
 
 
-As Ruby is flexible enough to leave you explore new things, you can always use [`Object#tap`](https://ruby-doc.org/core-2.7.1/Object.html#method-i-tap) to achieve the same goal; start by _taping_ an empty Hash passing a block where you iterate an object with `each` and do the same procedure as in the previous way but this time modifying the _taped_ object, producing the same expected output.
+As Ruby is flexible enough to leave you to explore new things, you can always use [`Object#tap`](https://ruby-doc.org/core-2.7.1/Object.html#method-i-tap) to achieve the same goal; start by _taping_ an empty Hash passing a block where you iterate an object with `each` and do the same procedure as in the previous way but this time modifying the _taped_ object, producing the same expected output.
 
 There's another way I can come up with to get the same result as seen before; [`Enumerable#to_h`](https://ruby-doc.org/core-2.6.5/Enumerable.html#method-i-to_h). `to_h` is since many time the preferred notation to refer to the conversion of one object to a Hash, and since the version 2.6 of Ruby it allows passing a block where you can specify what's the pair of objects in an array that are going to be used during the conversion of the receiver to a Hash:
 
@@ -155,9 +157,9 @@ people.to_h { |person| [person.login, person] }
 
 
 
-Four characters less, a single method invoked and a pretty clear intent. A very neat addition for `to_h`.
+Four characters less, a single method invoked, and a pretty clear intent. A very neat addition for `to_h`.
 
-If you're working with Ruby and your version supports passing a block to `to_h` you can stick with it, otherwise if you're using Rails `index_by` is enough to get it done.
+If you're working with Ruby and your version supports passing a block to `to_h` you can stick with it, otherwise, if you're using Rails `index_by` is enough to get it done.
 
 Having so many ways to get the same expected result makes oneself wonder which is the best one. As _best_ is a broad term and depends heavily on the context, the less you can do is to measure them to see which one to choose. For that you can use the [`evanphx/benchmark-ips`](https://github.com/evanphx/benchmark-ips) library - actually Ruby provides `benchmark` which is simpler, if you want you can go with it, the usage is pretty much the same.
 
@@ -214,13 +216,13 @@ Enumerable#each_with_object:   357570.7 i/s - same-ish: difference falls within 
 
 
 
-I'm focusing here just in the comparison. It states that the `to_h` _way_ runs at 448486.3 iterations per second being the fastest one, and in the counterpart it's the `Hash::[]` _way_ running at 150846.4 iterations per second making it almost 3 times slower than `to_h`.
+I'm focusing here just in the comparison. It states that the `to_h` _way_ runs at 448486.3 iterations per second being the fastest one, and in the counterpart, it's the `Hash::[]` _way_ running at 150846.4 iterations per second making it almost 3 times slower than `to_h`.
 
-Looking at the result we infer that the difference isn't much, and we could stick our code even to the use of the `each` version, which is by far the less Ruby-_ish_ (for saying something), but we wouldn't be in much troubles because the difference in a scenario like this is almost imperceptible for a human.
+Looking at the result we infer that the difference isn't much, and we could stick our code even to the use of the `each` version, which is by far the less Ruby-_ish_ (for saying something), but we wouldn't be in many troubles because the difference in a scenario like this is almost imperceptible for a human.
 
-`index_by` despite using the same code as in `Array#each` performed less iterations per second, what makes me think it must be something related to have to require the `active_support` library to make it work and all the underlying code regarding to it.
+`index_by` despite using the same code as in `Array#each` performed fewer iterations per second, what makes me think it must be something related to having to require the `active_support` library to make it work and all the underlying code in regards to it.
 
-For the ones producing a _"same-ish: difference falls within error"_ output, it means that the difference is of no value. Although different they don't provide a meaningful insight about their performance in comparison to the ones they're paired with.
+For the ones producing a _"same-ish: difference falls within error"_ output, it means that the difference is of no value. Although different they don't provide meaningful insight about their performance in comparison to the ones they're paired with.
 
 ##### Enumerable#index_with
 
@@ -247,7 +249,7 @@ post = Post.new(title: "hey there", body: "what's up?")
 
 
 
-In the example, the receiver `%i[body title]` is iterated and for each element it assigns to a _temporal_ (kind of `memo_obj`) hash the current element as its key and the result of `post.public_send(attr_name)` as its value, meaning it first uses `body` to assign the hash key:
+In the example, the receiver `%i[body title]` is iterated and for each element, it assigns to a _temporal_ (kind of `memo_obj`) hash the current element as its key and the result of `post.public_send(attr_name)` as its value, meaning it first uses `body` to assign the hash key:
 
 ```ruby
 { :body => post.public_send(attr_name) }
@@ -283,7 +285,7 @@ end
 
 
 
-If you don't pass a block, it uses the default argument as the value for the current element; that's to say, for all the element in the receiver as long as `default` is different to `Enumerable::INDEX_WITH_DEFAULT`, otherwise it returns the receiver as an `Enumerable` object of `index_with`.
+If you don't pass a block, it uses the default argument as the value for the current element; that's to say, for all the element in the receiver as long as `default` is different to `Enumerable::INDEX_WITH_DEFAULT`, otherwise, it returns the receiver as an `Enumerable` object of `index_with`.
 
 So, the second branch of the condition is pretty useful too. If you want to create a `Hash` from an array with some default values, you can pass it as the first and only one parameter for `index_with`, e.g:
 
@@ -296,6 +298,13 @@ So, the second branch of the condition is pretty useful too. If you want to crea
 %i[body title].index_with("placeholder")
 => {:body=>"placeholder", :title=>"placeholder"}
 ```
+
+<br>
+<br>
+
+As you can see with these two examples, Rails adds many different methods in its core that can be very useful in making your code easier to read and to understand.
+
+While many of them might not provide a very big difference in time and/or space complexity, they might help you to do your code less error-prone and to make their intent more clear, which is a point to start considering to use them.
 
 {% include references.html -%}
 
